@@ -1,0 +1,111 @@
+PODS:
+  - Alamofire (4.5.0)
+  - Bolts (1.8.4):
+    - Bolts/AppLinks (= 1.8.4)
+    - Bolts/Tasks (= 1.8.4)
+  - Bolts/AppLinks (1.8.4):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.8.4)
+  - Crashlytics (3.8.5):
+    - Fabric (~> 1.6.3)
+  - Fabric (1.6.12)
+  - FFCircularProgressView (0.5)
+  - QMCVDevelopment (0.5):
+    - FFCircularProgressView
+    - QMCVDevelopment/Categories (= 0.5)
+    - QMCVDevelopment/Protocols (= 0.5)
+    - QMCVDevelopment/QMChatDataSource (= 0.5)
+    - QMCVDevelopment/QMChatLocationSnapshotter (= 0.5)
+    - QMCVDevelopment/Sections (= 0.5)
+    - QMCVDevelopment/Utils (= 0.5)
+    - QMCVDevelopment/ViewModels (= 0.5)
+    - QMCVDevelopment/Views (= 0.5)
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/Categories (0.5):
+    - FFCircularProgressView
+    - QMCVDevelopment/QMChatLocationSnapshotter
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/Protocols (0.5):
+    - FFCircularProgressView
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/QMChatDataSource (0.5):
+    - FFCircularProgressView
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/QMChatLocationSnapshotter (0.5):
+    - FFCircularProgressView
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/Sections (0.5):
+    - FFCircularProgressView
+    - QMCVDevelopment/QMChatDataSource
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/Utils (0.5):
+    - FFCircularProgressView
+    - QMCVDevelopment/Categories
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/ViewModels (0.5):
+    - FFCircularProgressView
+    - QMCVDevelopment/Categories
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMCVDevelopment/Views (0.5):
+    - FFCircularProgressView
+    - QMCVDevelopment/Categories
+    - QMCVDevelopment/Protocols
+    - QMCVDevelopment/Utils
+    - SDWebImage (~> 4.0.0)
+    - TTTAttributedLabel (> 1.13)
+  - QMServicesDevelopment (0.5):
+    - Bolts (>= 1.5.0)
+  - SDWebImage (4.0.0):
+    - SDWebImage/Core (= 4.0.0)
+  - SDWebImage/Core (4.0.0)
+  - SearchEmojiOnString (1.1.0)
+  - SVProgressHUD (1.1.3)
+  - TTTAttributedLabel (2.0.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - Crashlytics
+  - Fabric
+  - QMCVDevelopment (from `https://github.com/QuickBlox/QMChatViewController-ios.git`)
+  - QMServicesDevelopment (from `https://github.com/QuickBlox/q-municate-services-ios.git`)
+  - SearchEmojiOnString
+  - SVProgressHUD (~> 1.1.3)
+
+EXTERNAL SOURCES:
+  QMCVDevelopment:
+    :git: https://github.com/QuickBlox/QMChatViewController-ios.git
+  QMServicesDevelopment:
+    :git: https://github.com/QuickBlox/q-municate-services-ios.git
+
+CHECKOUT OPTIONS:
+  QMCVDevelopment:
+    :commit: 57fc37f504e01a124dac9b11e0fc0e7156521531
+    :git: https://github.com/QuickBlox/QMChatViewController-ios.git
+  QMServicesDevelopment:
+    :commit: 3e5226a87fc844284475761a593e28c936007a73
+    :git: https://github.com/QuickBlox/q-municate-services-ios.git
+
+SPEC CHECKSUMS:
+  Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  Crashlytics: dfbae35ef22ca189240d230ad501feea4ee85d2d
+  Fabric: f050464eac45a2ce5a8e6e6a07e977c0df32fe28
+  FFCircularProgressView: 683a4ab1e1bd613246a3dffa61503ffdebcde8d8
+  QMCVDevelopment: 06e12ea9060e58fea15b9251962bd96d9a3e1092
+  QMServicesDevelopment: fecbf448be17e2d4bfdd87159b4231b586a0c194
+  SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  SearchEmojiOnString: 7344970449603396555d058a0dc297b5471bafa7
+  SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
+  TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
+
+PODFILE CHECKSUM: 4dbbedc9f6bf34e463a767f6b4f612239ae6c324
+
+COCOAPODS: 1.3.1
