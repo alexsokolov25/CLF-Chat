@@ -62,6 +62,8 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
     
     var unreadMessages: [QBChatMessage]?
     
+    var timer: Timer!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -114,6 +116,8 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
             self.loadMessages()
             
             self.enableTextCheckingTypes = NSTextCheckingAllTypes
+            
+            timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(runTimedCode), userInfo: nil, repeats: true)
         }
     }
     
@@ -136,7 +140,7 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
         self.navigationItem.rightBarButtonItem = barButton
         
         ServicesManager.instance().chatService.addDelegate(self)
-        ServicesManager.instance().chatService.chatAttachmentService.delegate = self
+        ServicesManager.instance().chatService.chatAttachmentService.addDelegate(self)
         
         self.queueManager().add(self)
         
@@ -156,6 +160,8 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        timer.invalidate()
         
         if let willResignActive = self.willResignActiveBlock {
             NotificationCenter.default.removeObserver(willResignActive)
@@ -177,8 +183,17 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
         NotificationCenter.default.removeObserver(self)
     }
     
+    func runTimedCode() {
+        print("chat timer")
+        
+        self.loadMessages()
+    }
+    
     // MARK: Add Group
     func actionAddGroup() {
+        
+        timer.invalidate()
+        
         print("Add Participants")
         
         var participantsIDs:[NSNumber] = []
@@ -207,11 +222,9 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
     
     func updateTitle() {
         
-        if self.dialog.type != QBChatDialogType.private {
-            
-            self.title = self.dialog.name
-        }
-        else {
+        self.title = self.dialog.name
+        
+        if self.dialog.type == QBChatDialogType.private {
             
             if let recipient = ServicesManager.instance().usersService.usersMemoryStorage.user(withID: UInt(self.dialog!.recipientID)) {
                 

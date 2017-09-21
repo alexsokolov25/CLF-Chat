@@ -500,8 +500,11 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
             member = self.groupMember[indexPath.row]
             
         } else {
-            member = self.section_allContact[indexPath.section][indexPath.row]
-            
+            if searchActive != 0 {
+                member = self.filter_section_allContact[indexPath.section][indexPath.row]
+            } else {
+                member = self.section_allContact[indexPath.section][indexPath.row]
+            }
         }
         
         if let myInteger = Int((member?.chatID)!) {
@@ -605,9 +608,19 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
                     users.append(contentsOf: usersInDialogs)
                 }
                 
-                let chatName = self.nameForGroupChatWithUsers(users: users)
+                _ = AlertViewWithTextField(title: "Enter Group Name", message: nil, showOver:self, didClickOk: { (text) -> Void in
+                    
+                    let chatName = text!.trimmingCharacters(in: CharacterSet.whitespaces)
+                    
+                    self.createChat(name: chatName, users: users, completion: completion)
+                    
+                }) { () -> Void in
+                    
+                }
                 
-                self.createChat(name: chatName, users: users, completion: completion)
+//                let chatName = self.nameForGroupChatWithUsers(users: users)
+//                
+//                self.createChat(name: chatName, users: users, completion: completion)
             }
             
         }
@@ -692,6 +705,7 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func nameForGroupChatWithUsers(users:[QBUUser]) -> String {
         
+        //chat name for add new user to exiting chat
         let chatName = ServicesManager.instance().currentUser.login! + "_" + users.map({ $0.login ?? $0.email! }).joined(separator: ", ").replacingOccurrences(of: "@", with: "", options: String.CompareOptions.literal, range: nil)
         
         return chatName

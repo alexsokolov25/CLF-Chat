@@ -126,8 +126,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                                                         let concierge_count : Int = (userConcierge?.count)!
                                                         if concierge_count > 0 {
                                                             let concierge_dic = userConcierge?[0].dictionary
-                                                            let firstConciergeID = concierge_dic?["conciergeID"]?.int
-                                                            TheGlobalPoolManager.conciergeID = String(describing: firstConciergeID)
+                                                            let firstConciergeID = concierge_dic?["conciergeID"]?.string
+                                                            TheGlobalPoolManager.conciergeID = firstConciergeID!
                                                         } else {
                                                             TheGlobalPoolManager.conciergeID = "-1"
                                                         }
@@ -169,8 +169,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                                             let concierge_count : Int = (userConcierge?.count)!
                                             if concierge_count > 0 {
                                                 let concierge_dic = userConcierge?[0].dictionary
-                                                let firstConciergeID = concierge_dic?["conciergeID"]?.int
-                                                TheGlobalPoolManager.conciergeID = String(describing: firstConciergeID)
+                                                let firstConciergeID = concierge_dic?["conciergeID"]?.string
+                                                TheGlobalPoolManager.conciergeID = firstConciergeID!
                                             } else {
                                                 TheGlobalPoolManager.conciergeID = "-1"
                                             }

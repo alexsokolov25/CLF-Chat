@@ -111,13 +111,14 @@ class MessageTableViewCellModel: NSObject {
 }
 
 protocol LogoutDelegate {
+    
     func logout()
 }
 
 class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, QMChatServiceDelegate, QMChatConnectionDelegate, QMAuthServiceDelegate, LogoutDelegate, UISearchBarDelegate, QMUsersServiceDelegate {
     
     
-    var bMyGroup : Bool = false
+    var bMyGroup : Bool = true
     var bloadedView : Bool = false
     var bCompany : Bool = true
     var searchActive : Int = 0
@@ -160,6 +161,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var dialog: QBChatDialog?
     
+    var timer: Timer!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -178,6 +181,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.didEnterBackgroundNotification), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -217,6 +221,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if (QBChat.instance.isConnected) {
             self.getDialogs()
         }
+        
+        timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(runTimedCode), userInfo: nil, repeats: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -290,6 +296,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         self.archivedTableView.layoutIfNeeded()
     }
 
+    func runTimedCode() {
+        self.getDialogs()
+        
+        self.reloadTableViewIfNeeded()
+    }
+    
     func getGroupMember() {
         
         let user = TheGlobalPoolManager.currentUser
@@ -395,12 +407,18 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     @IBAction func actionProfile(_ sender: Any) {
+        
+        timer.invalidate()
+        
         let viewCon = self.storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
         viewCon?.delegate = self
         self.navigationController?.pushViewController(viewCon!, animated: true)
     }
     
     @IBAction func actionNewMessage(_ sender: Any) {
+        
+        timer.invalidate()
+        
         let viewCon = self.storyboard?.instantiateViewController(withIdentifier: "NewMessageViewController")
         self.navigationController?.pushViewController(viewCon!, animated: true)
     }
@@ -484,6 +502,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func logout() {
+        
+        timer.invalidate()
         
         if !QBChat.instance.isConnected {
             
@@ -687,6 +707,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             cell.unreadMessagesCounterLabelText.text = cellModel.unreadMessagesCounterLabelText
             cell.unreadMessageHolderView.isHidden = cellModel.unreadMessagesCounterHiden
             
+            cell.unreadMessagesCounterLabelText.isHidden = cellModel.unreadMessagesCounterHiden
+            
             if cellModel.unreadMessagesCounterHiden {
                 cell.messageTrailConstraint.constant = -30
             } else {
@@ -717,7 +739,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 //                        cell.m_btnAudioCall.tag = indexPath.row
 //                        cell.m_btnAudioCall.addTarget(self, action: #selector(HomeViewController.actionAudioCall(_:)), for: .touchUpInside)
                         
-                        cell.m_btnText.tag = indexPath.row
+                        cell.m_btnText.tag = (indexPath.section * 100) + indexPath.row
                         cell.m_btnText.addTarget(self, action: #selector(HomeViewController.actionTextChat(_:)), for: .touchUpInside)
                     }
                 }
@@ -750,7 +772,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 //                cell.m_btnAudioCall.tag = (member?.profileID)!
 //                cell.m_btnAudioCall.addTarget(self, action: #selector(HomeViewController.actionAudioCall(_:)), for: .touchUpInside)
                 
-                cell.m_btnText.tag = indexPath.row
+                cell.m_btnText.tag = (indexPath.section * 100) + indexPath.row
                 cell.m_btnText.addTarget(self, action: #selector(HomeViewController.actionTextChat(_:)), for: .touchUpInside)
                 
                 return cell
@@ -760,6 +782,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == messageTableView || tableView == archivedTableView {
+            
+            timer.invalidate()
             
             guard let dialog = self.dialogs()?[indexPath.row] else {
                 return
@@ -885,11 +909,31 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func actionTextChat(_ sender: UIButton) {
-        print(sender.tag)   //sender.tag is ChatID
         
-        let member = self.groupMember[sender.tag]
+        let section = sender.tag / 100
+        let row = sender.tag % 100
+        var member : GroupMember? = nil
         
-        self.gotoChat(member)
+        if bMyGroup {
+            member = self.groupMember[row]
+        } else {
+            if bCompany {
+                if searchActive == 1 {
+                    member = self.filter_section_allContact[section][row]
+                } else {
+                    member = self.section_allContact[section][row]
+                }
+            } else {
+                if searchActive == 1 {
+                    member = self.filter_memberByName[row]
+                } else {
+                    member = self.memberSortByName[row]
+                }
+            }
+        }
+        
+        
+        self.gotoChat(member!)
     }
     
     func gotoChat(_ member: GroupMember) {

@@ -24,8 +24,6 @@
 		68440D4EE3FECE357167667C /* CornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68440A2C1E78F6FC561A7A09 /* CornerView.swift */; };
 		68440EE02D9A7184D21DF0F7 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68440EF02AB27CCF47A87701 /* AlertView.swift */; };
 		840F321D1F56659D00571714 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840F321C1F56659D00571714 /* Date.swift */; };
-		8412049E1F5579DB00E01978 /* Quickblox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8412049D1F5579DB00E01978 /* Quickblox.framework */; };
-		8412049F1F5579DB00E01978 /* Quickblox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8412049D1F5579DB00E01978 /* Quickblox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		841204A21F557A1600E01978 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841204A11F557A1600E01978 /* SwiftyJSON.swift */; };
 		841919481F551FEA00CE2570 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841919471F551FEA00CE2570 /* CoreFoundation.framework */; };
 		8419194A1F551FF800CE2570 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841919491F551FF800CE2570 /* Foundation.framework */; };
@@ -40,8 +38,10 @@
 		8419195C1F55204F00CE2570 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8419195B1F55204F00CE2570 /* libxml2.tbd */; };
 		8419195E1F55205700CE2570 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8419195D1F55205700CE2570 /* libz.tbd */; };
 		845C980F1F55CF530038666D /* ArchivedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845C980E1F55CF530038666D /* ArchivedCell.swift */; };
-		84AB0DC11F56DF8F00E0FA00 /* QuickbloxWebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84AB0DC01F56DF8F00E0FA00 /* QuickbloxWebRTC.framework */; };
-		84AB0DC21F56DF8F00E0FA00 /* QuickbloxWebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 84AB0DC01F56DF8F00E0FA00 /* QuickbloxWebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		845E90531F71780500671417 /* QuickbloxWebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84AB0DC01F56DF8F00E0FA00 /* QuickbloxWebRTC.framework */; };
+		845E90541F71780500671417 /* QuickbloxWebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 84AB0DC01F56DF8F00E0FA00 /* QuickbloxWebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		845E90561F71780A00671417 /* Quickblox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8412049D1F5579DB00E01978 /* Quickblox.framework */; };
+		845E90571F71780A00671417 /* Quickblox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8412049D1F5579DB00E01978 /* Quickblox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		84AB0DCE1F56E3A300E0FA00 /* QMSoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 84AB0DC61F56E3A300E0FA00 /* QMSoundManager.m */; };
 		84AB0DCF1F56E3A300E0FA00 /* QuickBloxAPIInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB0DC81F56E3A300E0FA00 /* QuickBloxAPIInterface.swift */; };
 		84AB0DD01F56E3A300E0FA00 /* VideoCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB0DC91F56E3A300E0FA00 /* VideoCallManager.swift */; };
@@ -87,14 +87,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		841204A01F5579DC00E01978 /* Embed Frameworks */ = {
+		845E90551F71780600671417 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				84AB0DC21F56DF8F00E0FA00 /* QuickbloxWebRTC.framework in Embed Frameworks */,
-				8412049F1F5579DB00E01978 /* Quickblox.framework in Embed Frameworks */,
+				845E90541F71780500671417 /* QuickbloxWebRTC.framework in Embed Frameworks */,
+				845E90571F71780A00671417 /* Quickblox.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -198,20 +198,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84AB0DC11F56DF8F00E0FA00 /* QuickbloxWebRTC.framework in Frameworks */,
 				8419195E1F55205700CE2570 /* libz.tbd in Frameworks */,
 				8419195C1F55204F00CE2570 /* libxml2.tbd in Frameworks */,
 				8419195A1F55204700CE2570 /* libresolv.tbd in Frameworks */,
 				841919581F55203E00CE2570 /* libc++.tbd in Frameworks */,
 				841919561F55203300CE2570 /* libicucore.tbd in Frameworks */,
+				845E90561F71780A00671417 /* Quickblox.framework in Frameworks */,
 				841919541F55202000CE2570 /* CFNetwork.framework in Frameworks */,
 				841919521F55201900CE2570 /* GLKit.framework in Frameworks */,
 				841919501F55201100CE2570 /* VideoToolbox.framework in Frameworks */,
-				8412049E1F5579DB00E01978 /* Quickblox.framework in Frameworks */,
 				8419194E1F55200A00CE2570 /* Accelerate.framework in Frameworks */,
 				8419194C1F55200200CE2570 /* UIKit.framework in Frameworks */,
 				8419194A1F551FF800CE2570 /* Foundation.framework in Frameworks */,
 				841919481F551FEA00CE2570 /* CoreFoundation.framework in Frameworks */,
+				845E90531F71780500671417 /* QuickbloxWebRTC.framework in Frameworks */,
 				E06A6BEB1D1182AE00431316 /* CoreTelephony.framework in Frameworks */,
 				14A4DCC61AC9A6030046D45C /* SystemConfiguration.framework in Frameworks */,
 				14A4DCC81AC9A6070046D45C /* MobileCoreServices.framework in Frameworks */,
@@ -580,7 +580,7 @@
 				E0C4D2941D198D42006BDC6F /* ShellScript */,
 				825097359D63254062952709 /* [CP] Embed Pods Frameworks */,
 				4B81D8C9CDCB1BF82DB02A49 /* [CP] Copy Pods Resources */,
-				841204A01F5579DC00E01978 /* Embed Frameworks */,
+				845E90551F71780600671417 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

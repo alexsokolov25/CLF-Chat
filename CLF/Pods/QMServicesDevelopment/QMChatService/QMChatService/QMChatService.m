@@ -736,6 +736,13 @@ static NSString* const kQMChatServiceDomain = @"com.q-municate.chatservice";
         QBChatDialog *chatDialog = [[QBChatDialog alloc] initWithDialogID:nil type:QBChatDialogTypePrivate];
         chatDialog.occupantIDs = @[@(opponentID)];
         
+        NSMutableDictionary *dictParam=[[NSMutableDictionary alloc]init];
+        
+        [dictParam setObject:@"archive" forKey:@"class_name"];
+        [dictParam setObject:@"1" forKey:@"value"];
+        
+        chatDialog.data = dictParam;
+        
         __weak __typeof(self)weakSelf = self;
         
         [QBRequest createDialog:chatDialog successBlock:^(QBResponse *response, QBChatDialog *createdDialog) {
@@ -791,6 +798,13 @@ static NSString* const kQMChatServiceDomain = @"com.q-municate.chatservice";
     chatDialog.name = name;
     chatDialog.photo = photo;
     chatDialog.occupantIDs = occupantIDs.allObjects;
+    
+    NSMutableDictionary *dictParam=[[NSMutableDictionary alloc]init];
+    
+    [dictParam setObject:@"archive" forKey:@"class_name"];
+    [dictParam setObject:@"1" forKey:@"value"];
+    
+    chatDialog.data = dictParam;
     
     __weak __typeof(self)weakSelf = self;
     [QBRequest createDialog:chatDialog successBlock:^(QBResponse *response, QBChatDialog *createdDialog) {
