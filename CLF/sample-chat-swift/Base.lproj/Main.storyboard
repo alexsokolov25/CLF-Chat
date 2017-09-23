@@ -30,7 +30,7 @@
         <!--Chat-->
         <scene sceneID="6XW-3T-EaS">
             <objects>
-                <viewController storyboardIdentifier="ChatViewController" title="Chat" automaticallyAdjustsScrollViewInsets="NO" id="3e3-Lk-tKV" customClass="ChatViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChatViewController" title="Chat" automaticallyAdjustsScrollViewInsets="NO" id="3e3-Lk-tKV" customClass="ChatViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="HwU-aZ-a47"/>
                         <viewControllerLayoutGuide type="bottom" id="2kO-hk-7BI"/>
@@ -55,7 +55,7 @@
         <!--Login View Controller-->
         <scene sceneID="MgS-IU-m5c">
             <objects>
-                <viewController storyboardIdentifier="LoginViewController" id="pGM-An-V0d" customClass="LoginViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="pGM-An-V0d" customClass="LoginViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zLT-lW-f1V"/>
                         <viewControllerLayoutGuide type="bottom" id="Ihc-jd-1Mn"/>
@@ -185,7 +185,7 @@
         <!--Signup View Controller-->
         <scene sceneID="s9Q-2y-mfq">
             <objects>
-                <viewController storyboardIdentifier="SignupViewController" id="fwI-up-GOP" customClass="SignupViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignupViewController" id="fwI-up-GOP" customClass="SignupViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="D14-6c-Z1Y"/>
                         <viewControllerLayoutGuide type="bottom" id="X2z-SX-SUq"/>
@@ -584,7 +584,7 @@
         <!--Home View Controller-->
         <scene sceneID="YhB-8v-Yab">
             <objects>
-                <viewController storyboardIdentifier="HomeViewController" id="Ay0-PN-5vj" customClass="HomeViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HomeViewController" id="Ay0-PN-5vj" customClass="HomeViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LJv-VS-AJq"/>
                         <viewControllerLayoutGuide type="bottom" id="IDr-hy-IXB"/>
@@ -840,7 +840,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="553"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <prototypes>
-                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ArchivedCell" rowHeight="90" id="kBg-Hq-cmw" customClass="ArchivedCell" customModule="sample_chat_swift" customModuleProvider="target">
+                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ArchivedCell" rowHeight="90" id="kBg-Hq-cmw" customClass="ArchivedCell" customModule="CLFChat" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="28" width="375" height="90"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kBg-Hq-cmw" id="Qaf-IF-FC3">
@@ -1018,7 +1018,7 @@
                                                         <rect key="frame" x="0.0" y="45" width="343" height="455"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <prototypes>
-                                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="60" id="V0O-wx-jdg" customClass="ContactCell" customModule="sample_chat_swift" customModuleProvider="target">
+                                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="60" id="V0O-wx-jdg" customClass="ContactCell" customModule="CLFChat" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="28" width="343" height="60"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="V0O-wx-jdg" id="WUC-4z-TGK">
@@ -1181,7 +1181,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="343" height="500"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <prototypes>
-                                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="60" id="nxm-ZV-Zsp" customClass="ContactCell" customModule="sample_chat_swift" customModuleProvider="target">
+                                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="60" id="nxm-ZV-Zsp" customClass="ContactCell" customModule="CLFChat" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="28" width="343" height="60"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nxm-ZV-Zsp" id="cVq-Yo-gbP">
@@ -1353,7 +1353,7 @@
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <prototypes>
-                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MessageHistoryCell" rowHeight="90" id="NCI-UQ-2KU" customClass="MessageHistoryCell" customModule="sample_chat_swift" customModuleProvider="target">
+                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MessageHistoryCell" rowHeight="90" id="NCI-UQ-2KU" customClass="MessageHistoryCell" customModule="CLFChat" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="28" width="375" height="90"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NCI-UQ-2KU" id="ZVq-aZ-Ls0">
@@ -1539,7 +1539,7 @@
         <!--New Message View Controller-->
         <scene sceneID="Le0-bR-cGY">
             <objects>
-                <viewController storyboardIdentifier="NewMessageViewController" id="cbi-Mf-G8M" customClass="NewMessageViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewMessageViewController" id="cbi-Mf-G8M" customClass="NewMessageViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="e6n-Y6-2Ws"/>
                         <viewControllerLayoutGuide type="bottom" id="cT3-ba-4UQ"/>
@@ -1686,10 +1686,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="frh-fL-UQj">
-                                <rect key="frame" x="16" y="201" width="343" height="225"/>
+                                <rect key="frame" x="16" y="201" width="343" height="120"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Message" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tZY-sb-JqH">
-                                        <rect key="frame" x="4" y="0.0" width="335" height="225"/>
+                                        <rect key="frame" x="4" y="0.0" width="335" height="120"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -1734,12 +1734,12 @@
                                     <constraint firstItem="tZY-sb-JqH" firstAttribute="top" secondItem="frh-fL-UQj" secondAttribute="top" id="IA8-Qc-wHV"/>
                                     <constraint firstItem="tZY-sb-JqH" firstAttribute="leading" secondItem="frh-fL-UQj" secondAttribute="leading" constant="4" id="LSo-pz-ALJ"/>
                                     <constraint firstAttribute="trailing" secondItem="HKr-Pa-Oxc" secondAttribute="trailing" id="SkQ-zZ-2kX"/>
-                                    <constraint firstAttribute="height" constant="225" id="ZjE-Bi-ABS"/>
+                                    <constraint firstAttribute="height" constant="120" id="ZjE-Bi-ABS"/>
                                     <constraint firstAttribute="bottom" secondItem="tZY-sb-JqH" secondAttribute="bottom" id="fs6-Jc-Uzi"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iQ2-mp-kbh">
-                                <rect key="frame" x="16" y="458" width="343" height="47"/>
+                                <rect key="frame" x="16" y="336" width="343" height="47"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xa4-Zn-82b">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="47"/>
@@ -1777,7 +1777,7 @@
                             <constraint firstItem="NoC-9j-bk9" firstAttribute="top" secondItem="YtR-WM-SOo" secondAttribute="bottom" id="EyL-GH-YKd"/>
                             <constraint firstItem="t24-6B-b1b" firstAttribute="leading" secondItem="nGA-dS-Ga7" secondAttribute="leading" constant="16" id="FVf-0v-p7w"/>
                             <constraint firstItem="YtR-WM-SOo" firstAttribute="top" secondItem="nGA-dS-Ga7" secondAttribute="top" id="NWt-fN-vPT"/>
-                            <constraint firstItem="iQ2-mp-kbh" firstAttribute="top" secondItem="frh-fL-UQj" secondAttribute="bottom" constant="32" id="Nrh-5M-CUl"/>
+                            <constraint firstItem="iQ2-mp-kbh" firstAttribute="top" secondItem="frh-fL-UQj" secondAttribute="bottom" constant="15" id="Nrh-5M-CUl"/>
                             <constraint firstItem="frh-fL-UQj" firstAttribute="top" secondItem="haE-np-2lC" secondAttribute="bottom" constant="15" id="TvS-JI-3Di"/>
                             <constraint firstAttribute="trailing" secondItem="YtR-WM-SOo" secondAttribute="trailing" id="TzL-vg-6DT"/>
                             <constraint firstItem="NoC-9j-bk9" firstAttribute="leading" secondItem="nGA-dS-Ga7" secondAttribute="leading" id="Ugm-Yj-Xc8"/>
@@ -1792,6 +1792,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="m_messageViewConstraint" destination="TvS-JI-3Di" id="Zch-Ii-rig"/>
+                        <outlet property="m_subjectView" destination="haE-np-2lC" id="UPl-30-x8M"/>
                         <outlet property="txtMessage" destination="tZY-sb-JqH" id="KcY-v1-LIx"/>
                         <outlet property="txtSubject" destination="gA4-pY-831" id="PNJ-x5-4l9"/>
                         <outlet property="txtUser" destination="VjJ-Ez-Uu1" id="165-Rt-blm"/>
@@ -1804,7 +1806,7 @@
         <!--Add New User View Controller-->
         <scene sceneID="hjd-vY-9t7">
             <objects>
-                <viewController storyboardIdentifier="AddNewUserViewController" id="Rlp-8J-Noo" customClass="AddNewUserViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddNewUserViewController" id="Rlp-8J-Noo" customClass="AddNewUserViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="HRL-yH-slO"/>
                         <viewControllerLayoutGuide type="bottom" id="2oY-wo-MGB"/>
@@ -2186,7 +2188,7 @@
         <!--Add User View Controller-->
         <scene sceneID="nWY-aG-Fa5">
             <objects>
-                <viewController storyboardIdentifier="AddUserViewController" id="PPN-4v-4DC" customClass="AddUserViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddUserViewController" id="PPN-4v-4DC" customClass="AddUserViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="B1F-ey-m6s"/>
                         <viewControllerLayoutGuide type="bottom" id="J6p-8O-YMh"/>
@@ -2410,7 +2412,7 @@
                                         <rect key="frame" x="0.0" y="44" width="375" height="436"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UserCell" rowHeight="72" id="dNQ-9b-Fzz" customClass="UserCell" customModule="sample_chat_swift" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UserCell" rowHeight="72" id="dNQ-9b-Fzz" customClass="UserCell" customModule="CLFChat" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="28" width="375" height="72"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dNQ-9b-Fzz" id="vnG-ft-VUc">
@@ -2488,7 +2490,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UserCell" rowHeight="72" id="7Jf-u3-P5v" customClass="UserCell" customModule="sample_chat_swift" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UserCell" rowHeight="72" id="7Jf-u3-P5v" customClass="UserCell" customModule="CLFChat" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="28" width="375" height="72"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7Jf-u3-P5v" id="476-D7-7KP">
@@ -2604,7 +2606,7 @@
         <!--Chat View Controller1-->
         <scene sceneID="b65-sb-baz">
             <objects>
-                <viewController storyboardIdentifier="ChatViewController1" id="CHO-rR-qXK" customClass="ChatViewController1" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChatViewController1" id="CHO-rR-qXK" customClass="ChatViewController1" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="5GW-NS-j9S"/>
                         <viewControllerLayoutGuide type="bottom" id="Xgn-iH-WL1"/>
@@ -2816,7 +2818,7 @@ EE5lZWQgUmVzZXJ2YXRpb24gZm9yIFBhcnR5IG9mIDQgQCA4IHBtA
         <!--Profile View Controller-->
         <scene sceneID="jzW-BC-3h1">
             <objects>
-                <viewController storyboardIdentifier="ProfileViewController" id="QJM-mY-wI4" customClass="ProfileViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileViewController" id="QJM-mY-wI4" customClass="ProfileViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="epN-Xf-zm6"/>
                         <viewControllerLayoutGuide type="bottom" id="i9E-nT-S5x"/>
@@ -3025,7 +3027,7 @@ EE5lZWQgUmVzZXJ2YXRpb24gZm9yIFBhcnR5IG9mIDQgQCA4IHBtA
         <!--Video Call View Controller-->
         <scene sceneID="wXe-nS-EKf">
             <objects>
-                <viewController storyboardIdentifier="videocallview" id="l8w-K8-mYe" customClass="VideoCallViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="videocallview" id="l8w-K8-mYe" customClass="VideoCallViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Mvi-S2-vzG"/>
                         <viewControllerLayoutGuide type="bottom" id="bpv-nv-ARc"/>
@@ -3124,7 +3126,7 @@ EE5lZWQgUmVzZXJ2YXRpb24gZm9yIFBhcnR5IG9mIDQgQCA4IHBtA
         <!--Out Coming Call View Controller-->
         <scene sceneID="BA1-Pf-Dlj">
             <objects>
-                <viewController storyboardIdentifier="outcomingcallview" id="KfL-6w-KWu" customClass="OutComingCallViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="outcomingcallview" id="KfL-6w-KWu" customClass="OutComingCallViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="032-ue-wm7"/>
                         <viewControllerLayoutGuide type="bottom" id="WlM-P6-SVj"/>
@@ -3238,7 +3240,7 @@ EE5lZWQgUmVzZXJ2YXRpb24gZm9yIFBhcnR5IG9mIDQgQCA4IHBtA
         <!--Incoming Call View Controller-->
         <scene sceneID="REb-ga-1ev">
             <objects>
-                <viewController storyboardIdentifier="incomingcallview" id="gUt-Rl-xj4" customClass="IncomingCallViewController" customModule="sample_chat_swift" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="incomingcallview" id="gUt-Rl-xj4" customClass="IncomingCallViewController" customModule="CLFChat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="mGk-Fg-xBw"/>
                         <viewControllerLayoutGuide type="bottom" id="3Gg-JX-X7M"/>

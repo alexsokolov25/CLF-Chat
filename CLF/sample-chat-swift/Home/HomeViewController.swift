@@ -821,7 +821,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 
                 let deleteDialogBlock = { (dialog: QBChatDialog!) -> Void in
                     
-                    // Deletes dialog from server and cache.
+//                    // Deletes dialog from server and cache.
                     ServicesManager.instance().chatService.deleteDialog(withID: dialog.id!, completion: { (response) -> Void in
                         
                         guard response.isSuccess else {
@@ -832,6 +832,21 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                         
                         SVProgressHUD.showSuccess(withStatus: "SA_STR_ARCHIVED".localized)
                     })
+                    
+//                    let updateDialog = QBChatDialog(dialogID: dialog.id, type: QBChatDialogType.group)
+//                    updateDialog.data?.updateValue(0, forKey: "value")
+//                    QBRequest.update(updateDialog, successBlock: {(response: QBResponse?, dialog: QBChatDialog?) in
+//                        
+//                        guard (response?.isSuccess)! else {
+//                            SVProgressHUD.showError(withStatus: "SA_STR_ERROR_ARCHIVEING".localized)
+//                            print(response?.error?.error)
+//                            return
+//                        }
+//
+//                        SVProgressHUD.showSuccess(withStatus: "SA_STR_ARCHIVED".localized)
+//                    }, errorBlock: {(response: QBResponse!) in
+//                        
+//                    })
                 }
                 
                 if dialog.type == QBChatDialogType.private {
@@ -847,7 +862,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     })
                     
                     dialog.occupantIDs = occupantIDs
-                    let userLogin = ServicesManager.instance().currentUser.login ?? ""
+                    let userLogin = ServicesManager.instance().currentUser.fullName ?? ""
                     let notificationMessage = "User \(userLogin) " + "SA_STR_USER_HAS_ARCHIVE".localized
                     // Notifies occupants that user left the dialog.
                     ServicesManager.instance().chatService.sendNotificationMessageAboutLeaving(dialog, withNotificationText: notificationMessage, completion: { (error) -> Void in
@@ -1173,9 +1188,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         else {
             
-            SVProgressHUD.show(withStatus: "SA_STR_LOADING_DIALOGS".localized, maskType: SVProgressHUDMaskType.clear)
+//            SVProgressHUD.show(withStatus: "SA_STR_LOADING_DIALOGS".localized, maskType: SVProgressHUDMaskType.clear)
             
-            ServicesManager.instance().chatService.allDialogs(withPageLimit: kDialogsPageLimit, extendedRequest: nil, iterationBlock: { (response: QBResponse?, dialogObjects: [QBChatDialog]?, dialogsUsersIDS: Set<NSNumber>?, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
+            let extRequest = ["data[class_name]" : "archive", "data[value]" : "1"]
+            
+            ServicesManager.instance().chatService.allDialogs(withPageLimit: kDialogsPageLimit, extendedRequest: extRequest, iterationBlock: { (response: QBResponse?, dialogObjects: [QBChatDialog]?, dialogsUsersIDS: Set<NSNumber>?, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
                 
             }, completion: { (response: QBResponse?) -> Void in
                 
@@ -1184,7 +1201,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     return
                 }
                 
-                SVProgressHUD.showSuccess(withStatus: "SA_STR_COMPLETED".localized)
+//                SVProgressHUD.showSuccess(withStatus: "SA_STR_COMPLETED".localized)
                 ServicesManager.instance().lastActivityDate = NSDate()
             })
         }

@@ -506,8 +506,10 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
                 for readID in messageReadIDs {
                     let user = ServicesManager.instance().usersService.usersMemoryStorage.user(withID: UInt(readID))
                     
+                    let read_name = TheGlobalPoolManager.getQUserName(chatID: UInt(readID))
+                    
                     guard let unwrappedUser = user else {
-                        let unknownUserLogin = "@\(readID)"
+                        let unknownUserLogin = read_name
                         readLogins.append(unknownUserLogin)
                         
                         continue
@@ -532,8 +534,10 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
                 for deliveredID in messageDeliveredIDs {
                     let user = ServicesManager.instance().usersService.usersMemoryStorage.user(withID: UInt(deliveredID))
                     
+                    let delivered_name = TheGlobalPoolManager.getQUserName(chatID: UInt(deliveredID))
+                    
                     guard let unwrappedUser = user else {
-                        let unknownUserLogin = "@\(deliveredID)"
+                        let unknownUserLogin = delivered_name
                         deliveredLogins.append(unknownUserLogin)
                         
                         continue
@@ -663,7 +667,9 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
         if let topLabelText = ServicesManager.instance().usersService.usersMemoryStorage.user(withID: messageItem.senderID)?.login {
             topLabelAttributedString = NSAttributedString(string: topLabelText, attributes: attributes)
         } else { // no user in memory storage
-            topLabelAttributedString = NSAttributedString(string: "@\(messageItem.senderID)", attributes: attributes)
+            
+            let sender_name = TheGlobalPoolManager.getQUserName(chatID: messageItem.senderID)
+            topLabelAttributedString = NSAttributedString(string: sender_name, attributes: attributes)
         }
         
         return topLabelAttributedString
@@ -829,48 +835,60 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
             
             if let attachment = message?.attachments?.first {
                 
-                var keysToRemove: [String] = []
-                
-                let enumerator = self.attachmentCellsMap.keyEnumerator()
-                
-                while let existingAttachmentID = enumerator.nextObject() as? String {
-                    let cachedCell = self.attachmentCellsMap.object(forKey: existingAttachmentID as AnyObject?)
-                    if cachedCell === cell {
-                        keysToRemove.append(existingAttachmentID)
-                    }
-                }
-                
-                for key in keysToRemove {
-                    self.attachmentCellsMap.removeObject(forKey: key as AnyObject?)
-                }
-                
-                self.attachmentCellsMap.setObject(attachmentCell, forKey: attachment.id as AnyObject?)
-                
-                attachmentCell.attachmentID = attachment.id
-                
-                // Getting image from chat attachment cache.
-                
-                ServicesManager.instance().chatService.chatAttachmentService.image(forAttachmentMessage: message!, completion: { [weak self] (error, image) in
+                //attach file from Web
+                if (attachment.url != nil) {
                     
-                    guard attachmentCell.attachmentID == attachment.id else {
-                        return
-                    }
-                    
-                    self?.attachmentCellsMap.removeObject(forKey: attachment.id as AnyObject?)
-                    
-                    guard error == nil else {
-                        SVProgressHUD.showError(withStatus: error!.localizedDescription)
-                        print("Error downloading image from server: \(error).localizedDescription")
-                        return
-                    }
-                    
-                    if image == nil {
-                        print("Image is nil")
-                    }
+                    let url = URL(string:attachment.url!)
+                    let data = try? Data(contentsOf: url!)
+                    let image: UIImage = UIImage(data: data!)!
                     
                     attachmentCell.setAttachmentImage(image)
                     cell.updateConstraints()
-                    })
+                    
+                } else {    //attach file from mobile
+                    var keysToRemove: [String] = []
+                    
+                    let enumerator = self.attachmentCellsMap.keyEnumerator()
+                    
+                    while let existingAttachmentID = enumerator.nextObject() as? String {
+                        let cachedCell = self.attachmentCellsMap.object(forKey: existingAttachmentID as AnyObject?)
+                        if cachedCell === cell {
+                            keysToRemove.append(existingAttachmentID)
+                        }
+                    }
+                   
+                    for key in keysToRemove {
+                        self.attachmentCellsMap.removeObject(forKey: key as AnyObject?)
+                    }
+                    
+                    self.attachmentCellsMap.setObject(attachmentCell, forKey: attachment.id as AnyObject?)
+                    
+                    attachmentCell.attachmentID = attachment.id
+                    
+                    // Getting image from chat attachment cache.
+                    
+                    ServicesManager.instance().chatService.chatAttachmentService.image(forAttachmentMessage: message!, completion: { [weak self] (error, image) in
+                        
+                        guard attachmentCell.attachmentID == attachment.id else {
+                            return
+                        }
+                        
+                        self?.attachmentCellsMap.removeObject(forKey: attachment.id as AnyObject?)
+                        
+                        guard error == nil else {
+                            SVProgressHUD.showError(withStatus: error!.localizedDescription)
+                            print("Error downloading image from server: \(error).localizedDescription")
+                            return
+                        }
+                        
+                        if image == nil {
+                            print("Image is nil")
+                        }
+                        
+                        attachmentCell.setAttachmentImage(image)
+                        cell.updateConstraints()
+                        })
+                }
             }
             
         }

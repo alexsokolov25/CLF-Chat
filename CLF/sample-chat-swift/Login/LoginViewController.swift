@@ -297,7 +297,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     // MARK: - get quickblox all user
     
     func loadUsersWithCompletion(completion: @escaping ((_ results: [QBUUser]?)->Void)) {
-        let responsePage: QBGeneralResponsePage = QBGeneralResponsePage(currentPage: 0, perPage: 100)
+        let responsePage: QBGeneralResponsePage = QBGeneralResponsePage(currentPage: 0, perPage: 1000)
         QBRequest.users(for: responsePage, successBlock: { (response, responsePage, users) in
             print("users received: \(users)")
             completion(users)

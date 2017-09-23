@@ -25,6 +25,10 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
     var selMembers : [GroupMember] = []
     var userIDs:[NSNumber] = []
     
+    @IBOutlet weak var m_subjectView: UIView!
+    @IBOutlet weak var m_messageViewConstraint: NSLayoutConstraint!
+    var isGroup : Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -270,6 +274,9 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
             // Creating private chat.
             ServicesManager.instance().chatService.createPrivateChatDialog(withOpponent: users.first!, completion: { (response, chatDialog) in
                 
+                self.dialog = chatDialog
+                self.sendMessage()
+                
                 completion?(response, chatDialog)
             })
             
@@ -301,6 +308,9 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
                 ServicesManager.instance().chatService.sendSystemMessageAboutAdding(to: unwrappedDialog, toUsersIDs: dialogOccupants, withText:notificationText, completion: { (error) -> Void in
                     
                     ServicesManager.instance().chatService.sendNotificationMessageAboutAddingOccupants(dialogOccupants, to: unwrappedDialog, withNotificationText: notificationText)
+                    
+                    strongSelf.dialog = chatDialog
+                    strongSelf.sendMessage()
                     
                     completion?(response, unwrappedDialog)
                 })
@@ -342,15 +352,17 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
             return false
         }
         
-        if txtSubject.text?.length == 0 {
-            InterfaceManager.sharedInstance.showLocalValidationError(self, errorMessage: "Please enter subject")
+        if isGroup {
+            if txtSubject.text?.length == 0 {
+                InterfaceManager.sharedInstance.showLocalValidationError(self, errorMessage: "Please enter subject")
+                return false
+            }
+        }
+
+        if txtMessage.text?.length == 0 {
+            InterfaceManager.sharedInstance.showLocalValidationError(self, errorMessage: "Please enter message")
             return false
         }
-//
-//        if txtMessage.text?.length == 0 {
-//            InterfaceManager.sharedInstance.showLocalValidationError(self, errorMessage: "Please enter message")
-//            return false
-//        }
         
         return true
     }
@@ -361,6 +373,18 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
         txtUser.text = selUser
         self.selMembers = selMember
         self.userIDs = userIDs
+        
+        if userIDs.count > 1 {
+            m_messageViewConstraint.constant = 15
+            m_subjectView.isHidden = false
+            isGroup = true
+        } else {
+            m_subjectView.isHidden = true
+            m_messageViewConstraint.constant = -45
+            isGroup = false
+        }
+        
+        self.view.layoutIfNeeded()
     }
     
     // MARK: - QMChatServiceDelegate
@@ -390,6 +414,52 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
         if self.txtMessage.text == "" {
             self.txtMessage.text = "Message"
             self.txtMessage.textColor = UIColor.lightGray
+        }
+    }
+    
+    func queueManager() -> QMDeferredQueueManager {
+        return ServicesManager.instance().chatService.deferredQueueManager
+    }
+    
+    //MARK : send message
+    func sendMessage() {
+        
+        let message = QBChatMessage()
+        message.senderID = (TheGlobalPoolManager.currentUser?.chatID)!
+        message.dateSent = Date()
+        
+        if self.selectedImage != nil {
+
+            message.dialogID = (self.dialog?.id!)!
+            ServicesManager.instance().chatService.sendAttachmentMessage(message, to: self.dialog!, withAttachmentImage: self.selectedImage!, completion: {
+                [weak self] (error: Error?) -> Void in
+                
+                guard error != nil else { return }
+                
+                // perform local attachment message deleting if error
+                ServicesManager.instance().chatService.deleteMessageLocally(message)
+            })
+            
+        } else {
+            
+            if !self.queueManager().shouldSendMessagesInDialog(withID: (self.dialog?.id!)!) {
+                return
+            }
+            
+            message.text = self.txtMessage.text
+            message.deliveredIDs = [(NSNumber(value: (TheGlobalPoolManager.currentUser?.chatID)!))]
+            message.readIDs = [(NSNumber(value: (TheGlobalPoolManager.currentUser?.chatID)!))]
+            message.markable = true
+            
+            // Sending message.
+            ServicesManager.instance().chatService.send(message, toDialogID: (self.dialog?.id!)!, saveToHistory: true, saveToStorage: true) { (error) ->
+                Void in
+                
+                if error != nil {
+                    
+                    QMMessageNotificationManager.showNotification(withTitle: "SA_STR_ERROR".localized, subtitle: error?.localizedDescription, type: QMMessageNotificationType.warning)
+                }
+            }
         }
     }
 }

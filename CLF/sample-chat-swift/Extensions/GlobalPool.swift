@@ -26,4 +26,16 @@ class GlobalPool: NSObject {
     override init() {
         super.init()
     }
+    
+    func getQUserName(chatID : UInt) -> String {
+        
+        for elem in self.allUsers {
+            
+            if elem.id == chatID {
+                return elem.fullName!
+            }
+        }
+        
+        return ""
+    }
 }
