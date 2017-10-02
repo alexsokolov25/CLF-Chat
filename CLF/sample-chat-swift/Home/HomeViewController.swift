@@ -18,7 +18,7 @@ class MessageTableViewCellModel: NSObject {
     var lastDate : String = ""
     var groupUserLabel : String = ""
     
-    init(dialog: QBChatDialog, users: [QBUUser]) {
+    init(bArchive: Bool, dialog: QBChatDialog, users: [QBUUser]) {
         super.init()
         
         switch (dialog.type){
@@ -47,7 +47,11 @@ class MessageTableViewCellModel: NSObject {
             }
         }
         
-        lastDate = (dialog.updatedAt?.covertToString())!
+        if bArchive {
+            lastDate = (dialog.updatedAt?.covertToString1())!
+        } else {
+            lastDate = (dialog.updatedAt?.covertToString())!
+        }
 
         var strGroupID : String = ""
         let cntOccupant : Int = (dialog.occupantIDs?.count)!
@@ -57,16 +61,20 @@ class MessageTableViewCellModel: NSObject {
             var index : Int = 0
             
             for number in dialog.occupantIDs! {
+                
+                let logged_chatID = NSNumber(value: (TheGlobalPoolManager.currentUser?.chatID)!)
+                if logged_chatID == number { continue }
+                
                 index += 1
                 let chatID = NSNumber(value: elem.id)
 
-                if NSNumber(value: dialog.userID) == number { continue }
                 if index > 4 { continue }
                 if number == chatID {
                     strGroupID = strGroupID + elem.fullName! + ", "
                 }
             }
         }
+        
         if cntOccupant > 4 {
             strGroupID = strGroupID + "+" + String.init(format: "%d", (cntOccupant - 4))
             groupUserLabel = strGroupID
@@ -122,6 +130,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var bloadedView : Bool = false
     var bCompany : Bool = true
     var searchActive : Int = 0
+    var bArchive : Bool = false
     
     @IBOutlet weak var alertArchivedCntView: UIView!
     @IBOutlet weak var lblArchivedCnt: UILabel!
@@ -182,6 +191,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.didEnterBackgroundNotification), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         
+        ServicesManager.instance().chatService.dialogsMemoryStorage.free()
     }
     
     override func didReceiveMemoryWarning() {
@@ -222,7 +232,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.getDialogs()
         }
         
-        timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(runTimedCode), userInfo: nil, repeats: true)
+//        timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(runTimedCode), userInfo: nil, repeats: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -408,7 +418,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     @IBAction func actionProfile(_ sender: Any) {
         
-        timer.invalidate()
+//        timer.invalidate()
         
         let viewCon = self.storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
         viewCon?.delegate = self
@@ -417,7 +427,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     @IBAction func actionNewMessage(_ sender: Any) {
         
-        timer.invalidate()
+//        timer.invalidate()
         
         let viewCon = self.storyboard?.instantiateViewController(withIdentifier: "NewMessageViewController")
         self.navigationController?.pushViewController(viewCon!, animated: true)
@@ -425,6 +435,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     @IBAction func actionSelTab(_ sender: UIButton) {
         if sender.tag == 10 {
+            
+            bArchive = false
+            
             messageView.isHidden = false
             contactView.isHidden = true
             archivedView.isHidden = true
@@ -437,7 +450,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     
                 }
             })
+            
+            ServicesManager.instance().chatService.dialogsMemoryStorage.free()
+            
+            self.getDialogs()
+            
         } else if sender.tag == 11 {
+            bArchive = false
+            
             messageView.isHidden = true
             contactView.isHidden = false
             archivedView.isHidden = true
@@ -454,6 +474,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.getAllContacts()
             
         } else {
+            
+            bArchive = true
+            
             messageView.isHidden = true
             contactView.isHidden = true
             archivedView.isHidden = false
@@ -466,6 +489,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     
                 }
             })
+            
+            ServicesManager.instance().chatService.dialogsMemoryStorage.free()
+            
+            self.getDialogs()
         }
     }
 
@@ -503,7 +530,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func logout() {
         
-        timer.invalidate()
+//        timer.invalidate()
         
         if !QBChat.instance.isConnected {
             
@@ -651,7 +678,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 return dialogs.count
             }
         } else if tableView == archivedTableView {
-            return 0
+            if let dialogs = self.dialogs() {
+                return dialogs.count
+            }
         } else if tableView == myGroupTableView {
             return self.groupMember.count
         } else if tableView == allContactTableView {
@@ -697,7 +726,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             cell.tag = indexPath.row
             cell.dialogID = chatDialog.id!
             
-            let cellModel = MessageTableViewCellModel (dialog: chatDialog, users: TheGlobalPoolManager.allUsers)
+            let cellModel = MessageTableViewCellModel (bArchive: false,  dialog: chatDialog, users: TheGlobalPoolManager.allUsers)
             
             cell.m_profileImage.image = cellModel.dialogIcon
             cell.m_message?.text = chatDialog.lastMessageText
@@ -718,6 +747,45 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return cell
         } else if tableView == archivedTableView {
             let cell = tableView.dequeueReusableCell(withIdentifier: Constants.CellID.ArchivedCell, for: indexPath as IndexPath) as! ArchivedCell
+            
+            if ((self.dialogs()?.count)! < indexPath.row) {
+                return cell
+            }
+            
+            guard let chatDialog = self.dialogs()?[indexPath.row] else {
+                return cell
+            }
+            
+            if chatDialog.occupantIDs?.count == 2 {
+                cell.m_groupUser.isHidden = true
+                cell.avatarTopConstraint.constant = 15
+                cell.layoutIfNeeded()
+            } else {
+                cell.m_groupUser.isHidden = false
+                cell.avatarTopConstraint.constant = 2
+                cell.layoutIfNeeded()
+            }
+            
+            cell.tag = indexPath.row
+            cell.dialogID = chatDialog.id!
+            
+            let cellModel = MessageTableViewCellModel (bArchive: true, dialog: chatDialog, users: TheGlobalPoolManager.allUsers)
+            
+            cell.m_profileImage.image = cellModel.dialogIcon
+            cell.m_message?.text = chatDialog.lastMessageText
+            cell.m_subject?.text = cellModel.textLabelText
+            cell.m_groupUser?.text = cellModel.groupUserLabel
+            cell.m_time?.text = cellModel.lastDate
+            cell.unreadMessagesCounterLabelText.text = cellModel.unreadMessagesCounterLabelText
+            cell.unreadMessageHolderView.isHidden = cellModel.unreadMessagesCounterHiden
+            
+            cell.unreadMessagesCounterLabelText.isHidden = cellModel.unreadMessagesCounterHiden
+            
+            if cellModel.unreadMessagesCounterHiden {
+                cell.messageTrailConstraint.constant = -30
+            } else {
+                cell.messageTrailConstraint.constant = 7
+            }
             
             return cell
         } else {
@@ -783,7 +851,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == messageTableView || tableView == archivedTableView {
             
-            timer.invalidate()
+//            timer.invalidate()
             
             guard let dialog = self.dialogs()?[indexPath.row] else {
                 return
@@ -791,13 +859,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             
             let viewCon = self.storyboard?.instantiateViewController(withIdentifier: "ChatViewController") as? ChatViewController
             viewCon?.dialog = dialog
+            viewCon?.bArchive = self.bArchive
             self.navigationController?.pushViewController(viewCon!, animated: true)
         }
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         
-        if tableView == messageTableView {
+        if tableView == messageTableView || tableView == archivedTableView {
             return true
         }
         
@@ -809,76 +878,140 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return nil
         }
         
-        let share = UITableViewRowAction(style: .normal, title: "Archive") { action, index in
-            
-            // create the alert
-            let alert = UIAlertController(title: "SA_STR_WARNING".localized, message: "SA_STR_DO_YOU_REALLY_WANT_TO_ARCHIVE_SELECTED_DIALOG".localized, preferredStyle: .alert)
-            
-            // add the actions (buttons)
-            alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler:  { action in
+        if tableView == messageTableView {
+            let archive = UITableViewRowAction(style: .normal, title: "Archive") { action, index in
                 
-                SVProgressHUD.show(withStatus: "SA_STR_ARCHIVING".localized, maskType: SVProgressHUDMaskType.clear)
+                // create the alert
+                let alert = UIAlertController(title: "SA_STR_WARNING".localized, message: "SA_STR_DO_YOU_REALLY_WANT_TO_ARCHIVE_SELECTED_DIALOG".localized, preferredStyle: .alert)
                 
-                let deleteDialogBlock = { (dialog: QBChatDialog!) -> Void in
+                // add the actions (buttons)
+                alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler:  { action in
                     
-//                    // Deletes dialog from server and cache.
-                    ServicesManager.instance().chatService.deleteDialog(withID: dialog.id!, completion: { (response) -> Void in
+                    SVProgressHUD.show(withStatus: "SA_STR_ARCHIVING".localized, maskType: SVProgressHUDMaskType.clear)
+                    
+                    let archiveDialogBlock = { (dialog: QBChatDialog!) -> Void in
                         
-                        guard response.isSuccess else {
-                            SVProgressHUD.showError(withStatus: "SA_STR_ERROR_ARCHIVEING".localized)
-                            print(response.error?.error)
-                            return
-                        }
+                        dialog.data?.updateValue("0", forKey: "value")
+                        QBRequest.update(dialog, successBlock: {(response: QBResponse?, dialog: QBChatDialog?) in
+                            
+                            guard (response?.isSuccess)! else {
+                                SVProgressHUD.showError(withStatus: "SA_STR_ERROR_ARCHIVEING".localized)
+                                print(response?.error?.error)
+                                return
+                            }
+
+                            ServicesManager.instance().chatService.dialogsMemoryStorage.deleteChatDialog(withID: (dialog?.id!)!)
+                            QMChatCache.instance.deleteDialog(withID: (dialog?.id!)!, completion: nil)
+                            
+                            SVProgressHUD.showSuccess(withStatus: "SA_STR_ARCHIVED".localized)
+                            
+                            //add 0925
+                            self.getDialogs()
+                            
+                        }, errorBlock: {(response: QBResponse!) in
+                            
+                        })
+                    }
+                    
+                    if dialog.type == QBChatDialogType.private {
                         
-                        SVProgressHUD.showSuccess(withStatus: "SA_STR_ARCHIVED".localized)
-                    })
-                    
-//                    let updateDialog = QBChatDialog(dialogID: dialog.id, type: QBChatDialogType.group)
-//                    updateDialog.data?.updateValue(0, forKey: "value")
-//                    QBRequest.update(updateDialog, successBlock: {(response: QBResponse?, dialog: QBChatDialog?) in
-//                        
-//                        guard (response?.isSuccess)! else {
-//                            SVProgressHUD.showError(withStatus: "SA_STR_ERROR_ARCHIVEING".localized)
-//                            print(response?.error?.error)
-//                            return
-//                        }
-//
-//                        SVProgressHUD.showSuccess(withStatus: "SA_STR_ARCHIVED".localized)
-//                    }, errorBlock: {(response: QBResponse!) in
-//                        
-//                    })
-                }
-                
-                if dialog.type == QBChatDialogType.private {
-                    
-                    deleteDialogBlock(dialog)
-                    
-                }
-                else {
-                    // group
-                    let occupantIDs = dialog.occupantIDs!.filter({ (number) -> Bool in
+                        archiveDialogBlock(dialog)
                         
-                        return number.uintValue != ServicesManager.instance().currentUser.id
-                    })
+                    }
+                    else {
+                        // group
+                        let occupantIDs = dialog.occupantIDs!.filter({ (number) -> Bool in
+                            
+                            return number.uintValue != ServicesManager.instance().currentUser.id
+                        })
+                        
+                        dialog.occupantIDs = occupantIDs
+                        let userLogin = ServicesManager.instance().currentUser.fullName ?? ""
+                        let notificationMessage = "User \(userLogin) " + "SA_STR_USER_HAS_ARCHIVE".localized
+                        // Notifies occupants that user left the dialog.
+                        ServicesManager.instance().chatService.sendNotificationMessageAboutLeaving(dialog, withNotificationText: notificationMessage, completion: { (error) -> Void in
+                            archiveDialogBlock(dialog)
+                        })
+                    }
                     
-                    dialog.occupantIDs = occupantIDs
-                    let userLogin = ServicesManager.instance().currentUser.fullName ?? ""
-                    let notificationMessage = "User \(userLogin) " + "SA_STR_USER_HAS_ARCHIVE".localized
-                    // Notifies occupants that user left the dialog.
-                    ServicesManager.instance().chatService.sendNotificationMessageAboutLeaving(dialog, withNotificationText: notificationMessage, completion: { (error) -> Void in
-                        deleteDialogBlock(dialog)
-                    })
-                }
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 
-            }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
+            }
+            archive.backgroundColor = UIColor.red
             
-            // show the alert
-            self.present(alert, animated: true, completion: nil)
+            return [archive]
+        } else if tableView == archivedTableView {
+            
+            let reopen = UITableViewRowAction(style: .normal, title: "Re-Open") { action, index in
+                
+                // create the alert
+                let alert = UIAlertController(title: "SA_STR_WARNING".localized, message: "SA_STR_DO_YOU_REALLY_WANT_TO_REOPEN_SELECTED_DIALOG".localized, preferredStyle: .alert)
+                
+                // add the actions (buttons)
+                alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler:  { action in
+                    
+                    SVProgressHUD.show(withStatus: "SA_STR_REOPENING".localized, maskType: SVProgressHUDMaskType.clear)
+                    
+                    let archiveDialogBlock = { (dialog: QBChatDialog!) -> Void in
+                        
+                        dialog.data?.updateValue("1", forKey: "value")
+                        QBRequest.update(dialog, successBlock: {(response: QBResponse?, dialog: QBChatDialog?) in
+                            
+                            guard (response?.isSuccess)! else {
+                                SVProgressHUD.showError(withStatus: "SA_STR_ERROR_REOPENING".localized)
+                                print(response?.error?.error)
+                                return
+                            }
+                            
+                            ServicesManager.instance().chatService.dialogsMemoryStorage.deleteChatDialog(withID: (dialog?.id!)!)
+                            QMChatCache.instance.deleteDialog(withID: (dialog?.id!)!, completion: nil)
+                            
+                            SVProgressHUD.showSuccess(withStatus: "SA_STR_REOPENED".localized)
+                            
+                            //add 0925
+                            self.getDialogs()
+                            
+                        }, errorBlock: {(response: QBResponse!) in
+                            
+                        })
+                    }
+                    
+                    if dialog.type == QBChatDialogType.private {
+                        
+                        archiveDialogBlock(dialog)
+                        
+                    }
+                    else {
+                        // group
+                        let occupantIDs = dialog.occupantIDs!.filter({ (number) -> Bool in
+                            
+                            return number.uintValue != ServicesManager.instance().currentUser.id
+                        })
+                        
+                        dialog.occupantIDs = occupantIDs
+                        let userLogin = ServicesManager.instance().currentUser.fullName ?? ""
+                        let notificationMessage = "User \(userLogin) " + "SA_STR_USER_HAS_REOPEN".localized
+                        // Notifies occupants that user left the dialog.
+                        ServicesManager.instance().chatService.sendNotificationMessageAboutLeaving(dialog, withNotificationText: notificationMessage, completion: { (error) -> Void in
+                            archiveDialogBlock(dialog)
+                        })
+                    }
+                    
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
+            }
+            reopen.backgroundColor = UIColor.blue
+            
+            return [reopen]
         }
-        share.backgroundColor = UIColor.red
         
-        return [share]
+        return nil
     }
     
     func actionVideoCall(_ sender: UIButton) {
@@ -1174,24 +1307,32 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func getDialogs() {
         
-        if let lastActivityDate = ServicesManager.instance().lastActivityDate {
-            
-            ServicesManager.instance().chatService.fetchDialogsUpdated(from: lastActivityDate as Date, andPageLimit: kDialogsPageLimit, iterationBlock: { (response, dialogObjects, dialogsUsersIDs, stop) -> Void in
-                
-            }, completionBlock: { (response) -> Void in
-                
-                if (response.isSuccess) {
-                    
-                    ServicesManager.instance().lastActivityDate = NSDate()
-                }
-            })
-        }
-        else {
-            
+        //added 0925
+        QMChatCache.instance.deleteAllDialogs(completion: nil)
+        
+        
+//        if let lastActivityDate = ServicesManager.instance().lastActivityDate {
+//            
+//            ServicesManager.instance().chatService.fetchDialogsUpdated(from: lastActivityDate as Date, andPageLimit: kDialogsPageLimit, iterationBlock: { (response, dialogObjects, dialogsUsersIDs, stop) -> Void in
+//                
+//            }, completionBlock: { (response) -> Void in
+//                
+//                if (response.isSuccess) {
+//                    
+//                    ServicesManager.instance().lastActivityDate = NSDate()
+//                }
+//            })
+//        }
+//        else {
+        
 //            SVProgressHUD.show(withStatus: "SA_STR_LOADING_DIALOGS".localized, maskType: SVProgressHUDMaskType.clear)
-            
-            let extRequest = ["data[class_name]" : "archive", "data[value]" : "1"]
-            
+            var extRequest : [AnyHashable : Any]
+        
+            extRequest = ["data[class_name]" : "archive", "data[value]" : "1"]
+            if bArchive {
+                extRequest = ["data[class_name]" : "archive", "data[value]" : "0"]
+            }
+        
             ServicesManager.instance().chatService.allDialogs(withPageLimit: kDialogsPageLimit, extendedRequest: extRequest, iterationBlock: { (response: QBResponse?, dialogObjects: [QBChatDialog]?, dialogsUsersIDS: Set<NSNumber>?, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
                 
             }, completion: { (response: QBResponse?) -> Void in
@@ -1203,8 +1344,15 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 
 //                SVProgressHUD.showSuccess(withStatus: "SA_STR_COMPLETED".localized)
                 ServicesManager.instance().lastActivityDate = NSDate()
+                
+                if self.bArchive {
+                    self.archivedTableView.reloadData()
+                } else {
+                    self.messageTableView.reloadData()
+                }
+
             })
-        }
+//        }
     }
     
     // MARK: - DataSource
@@ -1284,7 +1432,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - Helpers
     func reloadTableViewIfNeeded() {
         if !ServicesManager.instance().isProcessingLogOut! {
-            self.messageTableView.reloadData()
+            if bArchive {
+                self.archivedTableView.reloadData()
+            } else {
+                self.messageTableView.reloadData()
+            }
         }
     }
 }

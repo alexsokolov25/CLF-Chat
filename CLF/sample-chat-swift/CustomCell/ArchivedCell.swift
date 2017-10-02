@@ -16,10 +16,19 @@ class ArchivedCell: UITableViewCell {
     @IBOutlet weak var m_message: UILabel!
     @IBOutlet weak var m_time: UILabel!
     
+    @IBOutlet weak var unreadMessageHolderView: UIView!
+    @IBOutlet weak var unreadMessagesCounterLabelText : UILabel!
+    
+    var dialogID = ""
+    
+    @IBOutlet weak var avatarTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var messagetHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var messageTrailConstraint: NSLayoutConstraint!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
+        self.unreadMessageHolderView.layer.cornerRadius = 12.0
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -27,5 +36,19 @@ class ArchivedCell: UITableViewCell {
 
         // Configure the view for the selected state
         
+        let markerColor = self.unreadMessageHolderView.backgroundColor
+        
+        super.setSelected(selected, animated: animated)
+        
+        self.unreadMessageHolderView.backgroundColor = markerColor
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        
+        let markerColor = self.unreadMessageHolderView.backgroundColor
+        
+        super.setHighlighted(highlighted, animated: animated)
+        
+        self.unreadMessageHolderView.backgroundColor = markerColor
     }
 }

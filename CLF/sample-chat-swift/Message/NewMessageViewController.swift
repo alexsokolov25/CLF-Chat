@@ -9,7 +9,7 @@
 import UIKit
 
 protocol AddGroupUserDelegate {
-    func getGroupUser(_ selUser : String, selMember : [GroupMember], userIDs : [NSNumber])
+    func getGroupUser(_ selUser : String, userIDs : [NSNumber])
 }
 
 class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIActionSheetDelegate, QMChatServiceDelegate, QMChatConnectionDelegate, UITextFieldDelegate, UITextViewDelegate {
@@ -22,7 +22,7 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
     var selectedImage: UIImage? = nil
     
     var dialog: QBChatDialog?
-    var selMembers : [GroupMember] = []
+//    var selMembers : [GroupMember] = []
     var userIDs:[NSNumber] = []
     
     @IBOutlet weak var m_subjectView: UIView!
@@ -68,7 +68,6 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
         let viewCon = self.storyboard?.instantiateViewController(withIdentifier: "AddUserViewController") as! AddUserViewController!
         viewCon?.selUsers = self.txtUser.text!
         viewCon?.userIDs = self.userIDs
-        viewCon?.selMember = self.selMembers
         viewCon?.delegate = self
         self.navigationController?.pushViewController(viewCon!, animated: true)
     }
@@ -98,14 +97,11 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
         if validateInput() {
             var users: [QBUUser] = []
             
-            for elem in self.selMembers {
+            for elem in self.userIDs {
                 
-                let user:QBUUser = QBUUser()
-                user.id = UInt(elem.chatID!)!
-                user.email = elem.email
-                user.password = "4GM@k3$G*S"
-                user.fullName = String.init(format: "%@ %@", elem.fname!, elem.lname!)
+                var user:QBUUser = QBUUser()
                 
+                user = TheGlobalPoolManager.getQUser(chatID: UInt(elem))
                 users.append(user)
             }
             
@@ -367,11 +363,10 @@ class NewMessageViewController: UIViewController, AddGroupUserDelegate, UIAction
         return true
     }
     
-    func getGroupUser(_ selUser : String, selMember : [GroupMember], userIDs : [NSNumber]) {
+    func getGroupUser(_ selUser : String, userIDs : [NSNumber]) {
         print(selUser)
         
         txtUser.text = selUser
-        self.selMembers = selMember
         self.userIDs = userIDs
         
         if userIDs.count > 1 {

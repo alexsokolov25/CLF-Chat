@@ -63,6 +63,7 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
     var unreadMessages: [QBChatMessage]?
     
     var timer: Timer!
+    var bArchive : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -127,17 +128,19 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
         self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.navigationItem.rightBarButtonItem?.isEnabled = false
         
-        let button = UIButton.init(type: .custom)
-        //set image for button
-        button.setImage(UIImage(named: "ic_add_group"), for: UIControlState.normal)
-        //add function for button
-        button.addTarget(self, action: #selector(ChatViewController.actionAddGroup), for: UIControlEvents.touchUpInside)
-        //set frame
-        button.frame = CGRect(x: 0, y: 7, width: 30, height: 30)
-        
-        let barButton = UIBarButtonItem(customView: button)
-        //assign button to navigationbar
-        self.navigationItem.rightBarButtonItem = barButton
+        if !bArchive {
+            let button = UIButton.init(type: .custom)
+            //set image for button
+            button.setImage(UIImage(named: "ic_add_group"), for: UIControlState.normal)
+            //add function for button
+            button.addTarget(self, action: #selector(ChatViewController.actionAddGroup), for: UIControlEvents.touchUpInside)
+            //set frame
+            button.frame = CGRect(x: 0, y: 7, width: 30, height: 30)
+            
+            let barButton = UIBarButtonItem(customView: button)
+            //assign button to navigationbar
+            self.navigationItem.rightBarButtonItem = barButton
+        }
         
         ServicesManager.instance().chatService.addDelegate(self)
         ServicesManager.instance().chatService.chatAttachmentService.addDelegate(self)
@@ -199,11 +202,15 @@ class ChatViewController: QMChatViewController, QMChatServiceDelegate, UIActionS
         var participantsIDs:[NSNumber] = []
         var strParticipants : String = ""
         
+        print(self.dialog)
+        
         for elem in TheGlobalPoolManager.allUsers {
             for number in dialog.occupantIDs! {
                 let chatID = NSNumber(value: elem.id)
                 
-                if NSNumber(value: dialog.userID) == number { continue }
+                let logged_chatID = NSNumber(value: (TheGlobalPoolManager.currentUser?.chatID)!)
+                if logged_chatID == number { continue }
+                
                 if number == chatID {
                     strParticipants = strParticipants + elem.fullName! + ", "
                     participantsIDs.append(number)

@@ -16,8 +16,10 @@
 "SA_STR_DELETE" = "Leave";
 "SA_STR_DELETED" = "Left";
 "SA_STR_ARCHIVED" = "Archived";
+"SA_STR_REOPENED" = "Reopened";
 "SA_STR_DELETING" = "Leaving...";
 "SA_STR_ARCHIVING" = "Archiving...";
+"SA_STR_REOPENING" = "Reopening...";
 
 "SA_STR_WARNING" = "Warning";
 "SA_STR_BLOCK" = "Block";
@@ -59,6 +61,7 @@
 "SA_STR_NEW_MESSAGE" = "New message";
 "SA_STR_USER_HAS_LEFT" = "has left chat.";
 "SA_STR_USER_HAS_ARCHIVE" = "has archive chat.";
+"SA_STR_USER_HAS_REOPEN" = "has reopen chat.";
 "SA_STR_CHAT_INFO" = "Chat info";
 
 // message text statuses
@@ -92,6 +95,7 @@
 "SA_STR_NOTE_YOU_WILL_NOT_RECEIVE_AMY_GROUP_MESSAGES" = "Note that you will not receive any group chat message from this user";
 "SA_STR_DO_YOU_REALLY_WANT_TO_DELETE_SELECTED_DIALOG" = "Do you really want to leave selected chat?";
 "SA_STR_DO_YOU_REALLY_WANT_TO_ARCHIVE_SELECTED_DIALOG" = "Do you really want to archive selected chat?";
+"SA_STR_DO_YOU_REALLY_WANT_TO_REOPEN_SELECTED_DIALOG" = "Do you really want to reopen selected chat?";
 "SA_STR_UNBLOCK_USER_P2P_CHAT" = "Unblock user in 1-1 chat";
 "SA_STR_BLOCK_USER_P2P_CHAT" = "Block user in 1-1 chat";
 "SA_STR_UNBLOCK_USER_GROUP_CHATS" = "Unblock user in all group chats";
@@ -103,6 +107,7 @@
 "SA_STR_ERROR" = "Error";
 "SA_STR_ERROR_DELETING" = "Error leaving";
 "SA_STR_ERROR_ARCHIVEING" = "Error archiving";
+"SA_STR_ERROR_REOPENING" = "Error reopening";
 "SA_STR_BAD_GATEWAY" = "Bad Gateway, please try again";
 "SA_STR_NETWORK_ERROR" = "Connection network error, please try again";
 "SA_STR_DID_NOT_CONNECT_ERROR" = "Did not connect with error:";

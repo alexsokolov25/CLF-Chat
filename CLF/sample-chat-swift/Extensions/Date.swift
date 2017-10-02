@@ -15,4 +15,11 @@ extension Date {
 //        dateFormatter.timeZone = NSTimeZone(name: "UTC") as! TimeZone
         return dateFormatter.string(from: self)
     }
+    
+    func covertToString1() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM/dd/yy HH:mm a"
+        //        dateFormatter.timeZone = NSTimeZone(name: "UTC") as! TimeZone
+        return dateFormatter.string(from: self)
+    }
 }

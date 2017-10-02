@@ -38,4 +38,16 @@ class GlobalPool: NSObject {
         
         return ""
     }
+    
+    func getQUser(chatID : UInt) -> QBUUser {
+        
+        for elem in self.allUsers {
+            
+            if elem.id == chatID {
+                return elem
+            }
+        }
+        
+        return QBUUser()
+    }
 }

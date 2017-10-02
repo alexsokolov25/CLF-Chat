@@ -27,6 +27,10 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     
     var groupMember:[GroupMember] = []
     
+    var memberByName:[GroupMember] = []
+    var memberSortByName:[GroupMember] = []
+    var filter_memberByName:[GroupMember] = []
+    
     var section_names = [String]()
     var section_allContact : [[GroupMember]] = []
     
@@ -39,9 +43,12 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     
     var delegate : AddGroupUserDelegate? = nil
     
-    var selMember:[GroupMember] = []
+//    var selMember:[GroupMember] = []
     
     var dialog: QBChatDialog!
+    
+    @IBOutlet weak var lblSortMode: UILabel!
+    var bCompany : Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -202,6 +209,7 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
                                         let obj = try GroupMember.init(fromJSON: elem.dictionary!, placename: placename!)
                                         section_contacts.append(obj)
                                         
+                                        self.memberByName.append(obj)
                                     } catch {
                                         print("ERROR: failed to initialize GroupMember from JSON: \(error)")
                                     }
@@ -214,6 +222,8 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
                             print("ERROR: failed to initialize AllContacts from JSON: \(error)")
                         }
                     }
+                    
+                    self.memberSortByName = self.memberByName.sorted(by: {$0.fname! < $1.fname!})
                     
                     self.contactsTableView.reloadData()
                 }
@@ -239,7 +249,7 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
             self.navigationController?.popViewController(animated: true)
             
             if self.delegate != nil {
-                self.delegate!.getGroupUser(selUsers, selMember: selMember, userIDs: userIDs)
+                self.delegate!.getGroupUser(selUsers, userIDs: userIDs)
             }
         } else {    //Add Participant for existing Chat
             self.addParticipant()
@@ -294,20 +304,30 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
             let username = String.init(format: "%@ %@", elem.fname!, elem.lname!)
             
             if !(userIDs.contains(chatID)) {
-                selMember.append(elem)
                 userIDs.append(chatID)
                 selUsers = selUsers + username + ", "
                 
             } else {
                 if let index = userIDs.index(of:chatID) {
                     userIDs.remove(at: index)
-                    selMember.remove(at: index)
                     selUsers = selUsers.replacingOccurrences(of: username + ", ", with: "", options: .literal, range: nil)
                     
                 }
             }
             
             userlist.text = selUsers
+        }
+        
+        self.contactsTableView.reloadData()
+    }
+    
+    @IBAction func actionSwitch(_ sender: UISwitch) {
+        if sender.isOn {
+            self.lblSortMode.text = "Sort by Company"
+            bCompany = true
+        } else {
+            self.lblSortMode.text = "Sort by Name"
+            bCompany = false
         }
         
         self.contactsTableView.reloadData()
@@ -334,26 +354,41 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        if searchText == "" {
-            searchActive = 0;
-        } else {
-            filter_section_names = section_names.filter({ (text) -> Bool in
-                let tmp: NSString = text as NSString
-                let range = tmp.range(of: searchText, options: .caseInsensitive)
-                return range.location != NSNotFound
-            })
-            
-            searchActive = 1;
-            
-            filter_section_allContact = []
-            
-            for item in filter_section_names {
-                let indexOfA = section_names.index(of: item)
+        if bCompany {   //Sort by company
+            if searchText == "" {
+                searchActive = 0;
+            } else {
+                filter_section_names = section_names.filter({ (text) -> Bool in
+                    let tmp: NSString = text as NSString
+                    let range = tmp.range(of: searchText, options: .caseInsensitive)
+                    return range.location != NSNotFound
+                })
                 
-                filter_section_allContact.append(section_allContact[indexOfA!])
+                searchActive = 1;
+                
+                filter_section_allContact = []
+                
+                for item in filter_section_names {
+                    let indexOfA = section_names.index(of: item)
+                    
+                    filter_section_allContact.append(section_allContact[indexOfA!])
+                }
+            }
+        } else {    //Sort by name
+            if searchText == "" {
+                searchActive = 0;
+            } else {
+                searchActive = 1;
+                filter_memberByName = []
+                for item in memberSortByName {
+                    let name : String = String.init(format: "%@ %@", item.fname!, item.lname!)
+                    
+                    if name.range(of: searchText, options: .caseInsensitive) != nil {
+                        filter_memberByName.append(item)
+                    }
+                }
             }
         }
-    
         
         self.contactsTableView.reloadData()
     }
@@ -363,10 +398,12 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
         if tableView == contactsTableView {
-            if searchActive != 0 {
-                return filter_section_names[section]
+            if bCompany {
+                if searchActive != 0 {
+                    return filter_section_names[section]
+                }
+                return section_names[section]
             }
-            return section_names[section]
         }
         
         return ""
@@ -376,26 +413,32 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
         
         if tableView == contactsTableView {
         
-            let frame = tableView.frame
+            if bCompany {
+                let frame = tableView.frame
 
-            let button = UIButton(frame: CGRect(x: frame.size.width - 50, y: 15, width: 20, height: 20))  // create button
-            button.tag = section
-            // the button is image - set image
-            button.setImage(UIImage(named: "ic_add"), for: UIControlState.normal)  // assumes there is an image named "remove_button"
-            button.addTarget(self, action: #selector(AddUserViewController.actionAdd(_:)), for: .touchUpInside)  // add selector called by clicking on the button
-            
-            let label = UILabel(frame: CGRect(x: 16, y: 14.5, width: 250, height: 21))
-            label.text = section_names[section]
-            
-            let headerView = UIView(frame: CGRect(x:0, y:0, width:frame.size.width, height:50))  // create custom view
-            
-//            headerView.backgroundColor = UIColor.init(red: 200, green: 200, blue: 206)
-            
-            headerView.addSubview(label)
-            headerView.addSubview(button)   // add the button to the view
-            
-            
-            return headerView
+                let button = UIButton(frame: CGRect(x: frame.size.width - 50, y: 15, width: 20, height: 20))  // create button
+                button.tag = section
+                // the button is image - set image
+                button.setImage(UIImage(named: "ic_add"), for: UIControlState.normal)  // assumes there is an image named "remove_button"
+                button.addTarget(self, action: #selector(AddUserViewController.actionAdd(_:)), for: .touchUpInside)  // add selector called by clicking on the button
+                
+                let label = UILabel(frame: CGRect(x: 16, y: 14.5, width: 250, height: 21))
+                
+                label.text = section_names[section]
+                if searchActive != 0 {
+                    label.text = filter_section_names[section]
+                }
+                
+                let headerView = UIView(frame: CGRect(x:0, y:0, width:frame.size.width, height:50))  // create custom view
+                
+    //            headerView.backgroundColor = UIColor.init(red: 200, green: 200, blue: 206)
+                
+                headerView.addSubview(label)
+                headerView.addSubview(button)   // add the button to the view
+                
+                
+                return headerView
+            }
         }
         
         return nil
@@ -403,7 +446,9 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if tableView == contactsTableView {
-            return 50.0
+            if bCompany {
+                return 50.0
+            }
         }
         
         return 0.0
@@ -412,11 +457,13 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         if tableView == contactsTableView {
-            if searchActive != 0 {
-                return filter_section_names.count
-            }
+            if bCompany {
+                if searchActive != 0 {
+                    return filter_section_names.count
+                }
 
-            return section_names.count
+                return section_names.count
+            }
         }
         
         return 1
@@ -432,10 +479,18 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
         if tableView == myGroupTableView {
             return self.groupMember.count
         } else if tableView == contactsTableView {
-            if searchActive != 0 {
-                return filter_section_allContact[section].count
+            if bCompany {
+                if searchActive != 0 {
+                    return filter_section_allContact[section].count
+                }
+                return section_allContact[section].count
             }
-            return section_allContact[section].count
+            else {
+                if searchActive != 0 {
+                    return self.filter_memberByName.count
+                }
+                return self.memberByName.count
+            }
         }
 
         return 0
@@ -462,14 +517,23 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
                 }
             }
             
+            
         } else if tableView == contactsTableView {
             
             var member : GroupMember? = nil
             
-            if searchActive != 0 {
-                member = self.filter_section_allContact[indexPath.section][indexPath.row]
+            if bCompany {
+                if searchActive != 0 {
+                    member = self.filter_section_allContact[indexPath.section][indexPath.row]
+                } else {
+                    member = self.section_allContact[indexPath.section][indexPath.row]
+                }
             } else {
-                member = self.section_allContact[indexPath.section][indexPath.row]
+                if searchActive != 0 {
+                    member = self.filter_memberByName[indexPath.row]
+                } else {
+                    member = self.memberSortByName[indexPath.row]
+                }
             }
             
             cell.m_userName.text = String.init(format: "%@ %@", (member?.fname!)!, (member?.lname!)!)
@@ -500,10 +564,18 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
             member = self.groupMember[indexPath.row]
             
         } else {
-            if searchActive != 0 {
-                member = self.filter_section_allContact[indexPath.section][indexPath.row]
+            if bCompany {
+                if searchActive != 0 {
+                    member = self.filter_section_allContact[indexPath.section][indexPath.row]
+                } else {
+                    member = self.section_allContact[indexPath.section][indexPath.row]
+                }
             } else {
-                member = self.section_allContact[indexPath.section][indexPath.row]
+                if searchActive != 0 {
+                    member = self.filter_memberByName[indexPath.row]
+                } else {
+                    member = self.memberSortByName[indexPath.row]
+                }
             }
         }
         
@@ -514,12 +586,10 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
             if userIDs.contains(chatID) {
                 if let index = userIDs.index(of:chatID) {
                     userIDs.remove(at: index)
-                    selMember.remove(at: index)
                     selUsers = selUsers.replacingOccurrences(of: username + ", ", with: "", options: .literal, range: nil)
                 }
                 
             } else {
-                selMember.append(member!)
                 userIDs.append(chatID)
                 selUsers = selUsers + username + ", "
             }
@@ -535,14 +605,11 @@ class AddUserViewController: UIViewController, UITableViewDataSource, UITableVie
     func addParticipant() {
         var users: [QBUUser] = []
         
-        for elem in self.selMember {
+        for elem in self.userIDs {
             
-            let user:QBUUser = QBUUser()
-            user.id = UInt(elem.chatID!)!
-            user.email = elem.email
-            user.password = "4GM@k3$G*S"
-            user.fullName = String.init(format: "%@ %@", elem.fname!, elem.lname!)
+            var user:QBUUser = QBUUser()
             
+            user = TheGlobalPoolManager.getQUser(chatID: UInt(elem))
             users.append(user)
         }
         
